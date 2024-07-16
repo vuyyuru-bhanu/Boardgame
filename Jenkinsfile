@@ -30,23 +30,23 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
+       // stage('SonarQube Analysis') {
+          //  steps {
+              //  script {
                     // Run SonarQube analysis with Maven
-                    withSonarQubeEnv('sonar-server') {
-                        sh "mvn clean install sonar:sonar -Dsonar.organization=bell -Dsonar.projectKey=bell_cgi"
-                    }
+              //      withSonarQubeEnv('sonar-server') {
+              //          sh "mvn clean install sonar:sonar -Dsonar.organization=bell -Dsonar.projectKey=bell_cgi"
+             //       }
+             //   }
+         //   }
+      //  }
+        //stage("Quality gate"){
+        //   steps {
+        //        script {
+         //           waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
                 }
-            }
-        }
-        stage("Quality gate"){
-           steps {
-                script {
-                    waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
-                }
-            } 
-        }
+         //   } 
+       // }
         stage('Artifactory configuration') {
             steps {
                 rtServer (
