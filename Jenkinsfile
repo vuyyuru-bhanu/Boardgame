@@ -106,17 +106,17 @@ pipeline {
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                sh '''
-                    git config user.email "prasad.bhanu59@gmail.com"
-                    git config user.name "Bhanu Vuyyuru"
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" test/deployment-service.yaml
-                    git add test/deployment-service.yaml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push @github.com/${GIT_USER_NAME}/${GIT_REPO_NAME>https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                    
+                
+                   sh "git config user.email 'prasad.bhanu59@gmail.com'"
+                    sh "git config user.name 'Bhanu Vuyyuru'"
+                   sh " BUILD_NUMBER=${BUILD_NUMBER} "
+                  sh "  sed -i 's/replaceImageTag/${BUILD_NUMBER}/g' deployment-service.yaml "
+                  sh  "git add deployment-service.yaml"
+                   sh "git commit -m 'Update deployment image to version ${BUILD_NUMBER}'"
+                    sh "git push @github.com/${GIT_USER_NAME}/${GIT_REPO_NAME">https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main"
+
 					
-                '''
+                
             }
         }
     }
