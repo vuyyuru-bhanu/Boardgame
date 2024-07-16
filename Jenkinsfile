@@ -14,11 +14,11 @@ pipeline {
 
             }
         }
-        stage('VCS Checkout') {
-            steps {
+        //stage('VCS Checkout') {
+        //    steps {
                 //git branch: 'main', url: 'https://github.com/vuyyuru-bhanu/Boardgame.git'
-            }
-        }
+        //    }
+       // }
 		stage('File System Scan') {
             steps {
                 sh "trivy fs --format table -o trivy-fs-report.html ."
