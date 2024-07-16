@@ -5,10 +5,15 @@ pipeline {
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
     } 
 	}
+    tools {
+        jdk 'jdk11'
+        maven 'mvn'
+    }
    
     stages {
 	    stage('Install trivy') {
             steps {
+                sh 'apt update && apt install openjdk-11-jdk -y'
                 sh 'wget https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb'
                 sh 'dpkg -i trivy_0.18.3_Linux-64bit.deb'
 
