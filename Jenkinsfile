@@ -110,8 +110,8 @@ pipeline {
                     git config user.email "prasad.bhanu59@gmail.com"
                     git config user.name "Bhanu Vuyyuru"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" deployment-service.yaml
-                    git add deployment-service.yaml
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" test/deployment-service.yaml
+                    git add test/deployment-service.yaml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push @github.com/${GIT_USER_NAME}/${GIT_REPO_NAME>https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
 					
