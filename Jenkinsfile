@@ -44,7 +44,7 @@ pipeline {
         //   steps {
         //        script {
          //           waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
-                }
+           //     }
          //   } 
        // }
         stage('Artifactory configuration') {
@@ -119,6 +119,7 @@ pipeline {
             }
         }
     }
+
 	
     }
         post {
@@ -155,4 +156,5 @@ pipeline {
         }
     }
 }
-    }
+}
+    
