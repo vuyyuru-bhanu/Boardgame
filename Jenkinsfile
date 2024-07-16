@@ -114,6 +114,7 @@ pipeline {
                     git add test/deployment-service.yaml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push @github.com/${GIT_USER_NAME}/${GIT_REPO_NAME>https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                    
 					
                 '''
             }
