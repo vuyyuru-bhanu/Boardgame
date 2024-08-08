@@ -1,10 +1,10 @@
 pipeline {
-    agent { 
-	    docker {
-            image 'bhanu3333/test:4' //need to install docker pipeline
-            args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
-    } 
-	}
+    agent any //{ 
+	    //docker {
+         //   image 'bhanu3333/test:4' //need to install docker pipeline
+         //   args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+  //  } 
+	//}
     tools {
         jdk 'jdk11'
         maven 'mvn'
@@ -30,62 +30,72 @@ pipeline {
             }
         }
 
-       // stage('SonarQube Analysis') {
-          //  steps {
-              //  script {
-                    // Run SonarQube analysis with Maven
-              //      withSonarQubeEnv('sonar-server') {
-              //          sh "mvn clean install sonar:sonar -Dsonar.organization=bell -Dsonar.projectKey=bell_cgi"
-             //       }
-             //   }
-         //   }
-      //  }
-        //stage("Quality gate"){
-        //   steps {
-        //        script {
-         //           waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
-           //     }
-         //   } 
+       stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Boardgame \
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.projectKey=Boardgame '''
+                }
+            }
+        }
+        stage("quality gate"){
+            steps {
+                script {
+                  waitForQualityGate abortPipeline: true, credentialsId: 'Sonar-token' 
+                }
+           }
+        }
+        //stage('Artifactory configuration') {
+           // steps {
+             //   rtServer (
+             //       id: "JFROG_OCT22",
+             //       url: "http://64.227.190.52:8082/artifactory",
+              //      credentialsId: "jfrog"
+              //  )
+
+              //  rtMavenDeployer (
+               //     id: "rel-snapshots",
+                //    serverId: "JFROG_OCT22",
+                //    releaseRepo: 'libs-release-local/',
+                //    snapshotRepo: 'libs-snapshot-local/'
+            //    )
+          //  }
        // }
-        stage('Artifactory configuration') {
-            steps {
-                rtServer (
-                    id: "JFROG_OCT22",
-                    url: "http://64.227.190.52:8082/artifactory",
-                    credentialsId: "jfrog"
-                )
 
-                rtMavenDeployer (
-                    id: "rel-snapshots",
-                    serverId: "JFROG_OCT22",
-                    releaseRepo: 'libs-release-local/',
-                    snapshotRepo: 'libs-snapshot-local/'
-                )
+       // stage('Exec Maven') {
+        //    steps {
+         //       rtMavenRun (
+          //          tool: 'mvn', // Tool name from Jenkins configuration
+           //         pom: 'pom.xml',
+            //        goals: 'clean deploy',
+             //       deployerId: "rel-snapshots"
+             //   )
+          //  }
+      //  }
+
+       // stage('Publish build info') {
+       //     steps {
+         //       rtPublishBuildInfo (
+          //          serverId: "JFROG_OCT22"
+          //      )
+          //  }
+       // }
+		stage ('Build war file'){
+            steps{
+                sh 'mvn clean install -DskipTests=true'
+            }
+        }
+        stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./ --format XML ', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
 
-        stage('Exec Maven') {
-            steps {
-                rtMavenRun (
-                    tool: 'mvn', // Tool name from Jenkins configuration
-                    pom: 'pom.xml',
-                    goals: 'clean deploy',
-                    deployerId: "rel-snapshots"
-                )
-            }
-        }
-
-        stage('Publish build info') {
-            steps {
-                rtPublishBuildInfo (
-                    serverId: "JFROG_OCT22"
-                )
-            }
-        }
-		
 		stage('Build and Push Docker Image') {
       environment {
-        DOCKER_IMAGE = "bhanu3333/hello:${BUILD_NUMBER}"
+        DOCKER_IMAGE = "bhanu3333/boardgame:${BUILD_NUMBER}"
         REGISTRY_CREDENTIALS = credentials('docker')
       }
       steps {
@@ -103,6 +113,7 @@ pipeline {
         environment {
             GIT_REPO_NAME = "Boardgame"
             GIT_USER_NAME = "vuyyuru-bhanu"
+            DOCKER_IMAGE = "bhanu3333/boardgame:${BUILD_NUMBER}"
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
@@ -110,9 +121,9 @@ pipeline {
                     git config user.email "prasad.bhanu59@gmail.com"
                     git config user.name "Bhanu Vuyyuru"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" deployment-service.yaml
+                    sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" deployment-service.yaml
                     git add deployment-service.yaml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git commit -m "Update deployment image of Boardgame to version ${BUILD_NUMBER}"
                     git push @github.com/${GIT_USER_NAME}/${GIT_REPO_NAME>https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
 
 					
