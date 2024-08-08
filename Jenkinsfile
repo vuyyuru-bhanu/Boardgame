@@ -1,10 +1,10 @@
 pipeline {
-    agent { 
-	    docker {
-          image 'bhanu3333/test:4' //need to install docker pipeline
-         args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
-    } 
-	}
+    agent any //{ 
+	    //docker {
+        //  image 'bhanu3333/test:4' //need to install docker pipeline
+        // args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+   // } 
+	//}
     tools {
         jdk 'jdk11'
         maven 'mvn'
