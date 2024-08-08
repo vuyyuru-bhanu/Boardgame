@@ -124,7 +124,7 @@ pipeline {
                     sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" deployment-service.yaml
                     git add deployment-service.yaml
                     git commit -m "Update deployment image of Boardgame to version ${BUILD_NUMBER}"
-                    git push @github.com/${GIT_USER_NAME}/${GIT_REPO_NAME>https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
 
 					
                 '''
