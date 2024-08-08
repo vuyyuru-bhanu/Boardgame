@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: boardgame
-          image: bhanu3333/hello:replaceImageTag # Image that will be used to containers in the cluster
+          image: bhanu3333/boardgame:1
           imagePullPolicy: Always
           ports:
             - containerPort: 8080 # The port that the container is running on in the cluster
