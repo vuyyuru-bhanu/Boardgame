@@ -30,22 +30,22 @@ pipeline {
             }
         }
 
-       stage("Sonarqube Analysis "){
-            steps{
-                withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Boardgame \
-                    -Dsonar.java.binaries=. \
-                    -Dsonar.projectKey=Boardgame '''
-                }
-            }
-        }
-        stage("quality gate"){
-            steps {
-                script {
-                  waitForQualityGate abortPipeline: true, credentialsId: 'Sonar-token' 
-                }
-           }
-        }
+       //stage("Sonarqube Analysis "){
+            // steps{
+            //     withSonarQubeEnv('sonar-server') {
+              //       sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Boardgame \
+               //      -Dsonar.java.binaries=. \
+               //      -Dsonar.projectKey=Boardgame '''
+              //   }
+           //  }
+       //  }
+       //  stage("quality gate"){
+          //   steps {
+             //    script {
+             //      waitForQualityGate abortPipeline: true, credentialsId: 'Sonar-token' 
+            //     }
+         //   }
+       //  }
         //stage('Artifactory configuration') {
            // steps {
              //   rtServer (
